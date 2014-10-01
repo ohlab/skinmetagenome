@@ -1,0 +1,113 @@
+Pathoscope 1.0
+--------------
+
+Introduction:
+Pathoscope is a program that takes alignment of next-generation sequencing reads from a mixture sample of multiple strains of genomes and it predicts which genomes potentially belongs there. This is different from most of approach including composition method or similarity search with a daunting task of de novo assembly. We apply the propagation of evidence in the Bayesian framework to an initial alignment result and reassign an correct membership of mapping by using the expectation and maximization algorithm. The program accepts sam / BLAST m8 -format (.bl8) and outputs a report that can be opened in Excel. It also optionally outputs an updated alignment file (sam/bl8).
+
+1. Installation
+
+1.1 Download the code from http://sourceforge.net/projects/pathoscope/
+
+1.2 Extract the code to a separate folder
+    You could issue the following command to extract the files:
+    "tar xvf pathoscope.tar.gz"
+
+
+2. Running
+
+2.1 Prerequisite: Need to have python 2.7.3 or later version installed and add python to your PATH variable (Usually already done as part of python installation) 
+
+2.2 Change directory to where you extracted the code 
+
+2.3 Simply run "python pathoscope.py -h" for detailed usage information
+
+2.4 There are also some unit tests for testing the validity of the functions. Change directory to "unittest" and simply run "python testPathoID.py". The answer.txt file in the data directory provides the answer expected from pathoscope EM algorithm for the four example scenarios considered for the unit tests.
+
+3. Example
+
+3.1 There is a sample alignment file called 'MG1655-mix_0.bl8' that is included with this package in the example folder.
+    You may also download the files called example_eec.bl8.gz and example_eec.sam.gz separately (Click "Browse All Files" at http://sourceforge.net/projects/pathoscope/ or http://sourceforge.net/projects/pathoscope/files/). These are alignment files generated from BLAST and Bowtie2 respectively from a pure sample containing 100% of Escherichia_coli_O104 strain. 
+    You can run pathoscope on it using the following commands assuming you have extracted the files example_eec.bl8.gz and example_eec.sam.gz using gunzip in the example folder.
+    "python pathoscope.py -t=bl8 -f=example/example_eec.bl8 -o -verbose -s=.01 -e=eec -outdir=results"
+    "python pathoscope.py -t=sam -f=example/example_eec.sam -o -verbose -s=.01 -e=eec -outdir=results"
+
+3.2 Test using the example alignment file included in the package as follows:
+
+    Suppose you have the alignment file 'MG1655-mix_0.bl8' in the 'example' directory and want the outputs generated in the 'results' directory, then run the following command.
+
+Generate the TSV(Tab Separated Value) file Report with an updated alignment file (named "updated_<original alignment file name>"):
+    "python pathoscope.py -t=bl8 -f=example/MG1655-mix_0.bl8 -o -verbose -s=.01 -e=MG1655-mix -outdir=results"
+
+Generate the TSV file Report without an updated alignment file:
+    "python pathoscope.py -t=bl8 -f=example/MG1655-mix_0.bl8 -o -verbose -noalign -s=.01 -e=MG1655-mix -outdir=results"
+
+3.3 TSV file format (You may need to rename this file as .csv for opening in some version of Excel such as LibreOffice):
+
+    At the top of the file in the first row, there are two fields called "Total Number of Aligned Reads" and "Total Number of Mapped Genomes". They represent the total number of reads that are aligned and the total number of genomes to which those reads align from the given alignment file.
+
+Columns in the TSV file:
+1. Genome:
+   This is the name of the genome found in the alignment file.
+2. Final Guess:
+    This represent the percentage of reads that are mapped to the genome in Column 1 (reads aligning to multiple genomes are assigned proportionally) after pathoscope reassignment is performed.
+3. Final Best Hit:
+    This represents the percentage of reads that have their the highest score mapped to the genome in Column 1 after the pathoscope reassignment is performed. Difference between this an the previous is that second-highest (etc) scores are ignored.
+4. Final Best Hit Read Numbers:
+    This represent the number reads that have their highest score mapped to the genome in Column 1 (may include a fraction when a read is aligned to multiple top hit genomes with the same highest score) and after pathoscope reassignment is performed.
+5. Final High Confidence Hits:
+    This represent the percentage of reads that are mapped to the genome in Column 1 with a high confidence alignment (50%-100% alignment probability) to this genome and after pathoscope reassignment is performed. If this value is equal to the value in #2, then all the reads are 
+6. Final Low Confidence Hits:
+    This represent the percentage of reads that are mapped to the genome in Column 1 with an a low alignment hit score (1%-50%) to this genome and after pathoscope reassignment is performed. These reads are shared with other genomes and their "best hit" could be to another genome.
+7. Initial Guess:
+    This represent the percentage of reads that are mapped to the genome in Column 1 (reads aligning to multiple genomes are assigned proportionally) before pathoscope reassignment is performed.
+8. Initial Best Hit:
+     This represents the percentage of reads that have their the highest score mapped to the genome in Column 1 before the pathoscope reassignment is performed. Difference between this an the previous is that second-highest (etc) scores are ignored.
+9. Initial Best Hit Read Numbers:
+    This represent the number of best hit reads that are mapped to the genome in Column 1 (may include a fraction when a read is aligned to multiple top hit genomes with the same highest score) and before pathoscope reassignment is performed.
+10. Initial High Confidence Hits:
+    This represent the percentage of reads that are mapped to the genome in Column 1 with an alignment hit score of 50%-100% to this genome and before pathoscope reassignment is performed.
+11. Initial Low Confidence Hits:
+    This represent the percentage of reads that are mapped to the genome in Column 1 with an alignment hit score of 1%-50% to this genome and before pathoscope reassignment is performed.
+
+
+3.4 Updated alignment file:
+	Pathoscope will generate an updated alignment file in either .sam or BLAST (bl8) format depending on the initial input format type. This updated file will contain all reads in the input file, but replacing the the previous alignment scores with post-Pathoscope reassignment scores. Alignments that don't achieve the Pathoscope threshold value (parameter -s, default 0.01) will be deleted from this file. For example, for a default score, the updated file will not retain any alignments with reassignment probabilities less that 1% after Pathoscope. This means that the updated file will likely be smaller than the original, and will contain only the high-probability reassignments. This new file can then be used for downstream analyses such as SNP calling, and genome/scaffold assembly. 
+
+3.5 Additional information on interpreting the results:
+	In purified samples for which the source genome is present in the database, Pathoscope will usually reassign all the reads with high probability to the single source genome. In addition, Pathoscope does extremely well in identifying strains in mixed samples and in accurately estimating the proportions of the aligned reads that come from each genome. 
+	
+	Alignment: Although Pathoscope is fairly independent of the aligner used, there are a few important alignment tricks that will increase the accuracy of the results. For example, be sure to include all optimally scoring alignments and any high-scoring suboptimal alignments. For example, suppose you have several E. coli strains in your database and you are using Bowtie 2 to align the reads. If a read aligns perfectly multiple strains in the database, by default Bowtie will randomly report only one of the alignments. In this case, Pathoscope will not be able to reassign the read to the correct genome or definitely identify the correct strain. Instead, one should use the -k parameter using a value greater than the number of similar stains (e.g. -k 50 if there are 30 E. coli strains). BLAST by default will report optimal and suboptimal alignments. For GNUMAP the --print_all flag should be used. However, making alignment thresholds too low can slow down the aligner, increase output file size, and in some extreme cases can lead to incorrect results because reads that should align to any genomes may have a low scoring match with an incorrect genome.
+	
+	Closely related substrains: If read coverage is low and/or if you have closely related strains in the database, Pathoscope may fail to assign all reads to one genome--but rather split the reads between the two (equally or maybe unequally). This type of result either indicates that both strains/substrains are present, or that there is not enough information in the reads for Pathoscope to definitively identify the source strain in the sample so it picks both. In our manuscript, we show that for nearly identical strains (99.9% similarity), usually ~20% (0.2X) coverage is usually sufficient to identify a difference. Note that this is about 1/500th of the data needed for whole genome assembly. However, in this same scenario, when read coverage was 5-10% (0.05X-0.10X) Pathoscope often struggled to distinguish between the nearly identical genomes.
+
+	Genome not in the database: Another common result occurs if the true species/strain is not contained in the database or if the true genome is incomplete. In these cases, Pathoscope does an excellent job at identifying the nearest fully assembled relative that is in the database, as long as there are at least some reads that align to that genome. However, one common result that we observed is that in these cases, Pathoscope won't completely converge to a single neighboring genome. Rather, Pathoscope will usually assign read proportions to multiple related genomes. In most cases, the one that scores the highest is the closest fully assembled neighbor. For example, in one case we sequenced reads from a clinical sample from a sick primate that was infected with a newly identified adenovirus. When we aligned the reads and applied Pathoscope, nearly a dozen adenoviruses received some proportion of the reads. The highest scoring genome, which received ~56% of the reads, turned out to be the adenovirus in the database that had the closest genome similarity to the infecting strain. Interestingly, when we added the correct genome into the mix, all the reads were reassigned to this correct genome with nearly 100% confidence, and all the other adenoviruses dropped off the list. We have observed this exact phenomenon in multiple examples so far.
+	
+	Pathoscope and parsimony: One positive/negative behavior of Pathoscope is that it has the tendency to want to identify a parsimonious list of genomes. This is advantageous if there is only one single strain of  each particular species in the sample, or if the mere identification of the species or strain type is important. However, if there are multiple strains/substrains of the same species, there is the possibility that Pathoscope will miss one of the substrains by reassigning the reads to another substrain. Basically, if there are reads that uniquely align to a single genome, Pathoscope can find the genome and nearly recover its proportions. However, if there are multiple substrains present and nothing is mapping uniquely, then there is a possibility that Pathoscope will miss one of the strains. This could be a problem in viral infections where there can be many subpopulations present (e.g. HIV). In these cases, the more appropriate approach is to remove the unique read penalty (theta parameter) and use a more standard mixture model. This will remove the tendency of Pathoscope toward parsimony.  
+	
+
+4. License: GNU-GPL
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+5. Support and Contact
+
+5.1 Pathoscope is developed at the JohnsonLab in Boston University.
+W. Evan Johnson, Ph.D.
+Division of Computational Biomedicine
+Boston University School of Medicine
+72 E. Concord St., E-645
+Boston, MA 02118
+
+5.2: For support queries, please open a ticket or contact us at mani2012@users.sourceforge.net
+https://sourceforge.net/p/pathoscope/tickets/
+

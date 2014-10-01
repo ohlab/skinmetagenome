@@ -1,0 +1,41 @@
+SKIN METAGENOMICS ANALYSIS GUIDE
+
+This repository contains the analyses as described in:
+
+Biogeography and individuality shape function in the human skin metagenome
+Julia Oh, Allyson L. Byrd, Clay Deming, Sean Conlan, NISC Comparative Sequencing Program, Heidi H. Kong, and Julia A. Segre
+Nature 514, 59–64 (2014).
+
+
+Disclaimers: 
+1. Please note that these are not really downloadable "programs" per se. Each group of scripts represent workflows for processing raw read data underlying the analyses published in the paper. Hence, these are works in progress and are undergoing rapid iteration! 
+
+2. We believe that every dataset and analysis is unique and thus please keep this in mind as you use these workflows. For instance, if you have really deep sequencing data with few samples, our assembly and binning methods will probably not be your best bet. If you are interested in something specific we did, please leave a comment and we will try to get back to you. 
+
+3. We can make no commitment beyond an amorphous endeavor to actively update associated databases, although we promise to upload databases if we do update them. However, most can be expanded in a fairly straightforward way, if you have specific references in mind. 
+
+4. The workflow was designed on a GNU/Linux parallel processing system with access to nodes with >256GB RAM, <32 processors/node, and 500GB temp disk space. Some analyses will run on smaller machines, and others will need to be adapted. We have tried to indicate where excessive amounts of RAM is needed. 
+
+
+
+A brief description of the contents: 
+
+assembly/
+Adaptive and iterative assembly for samples with variable coverage. 
+
+genecatalog/
+Creation of non-redundant multi-kingdom skin gene catalog.
+
+metagenomic_clusters/
+Clustering genes to create metagenomic linkage groups, i.e., metagenomic ‘species’, meta-‘genome’, pan-genome, etc.
+
+read_processing/
+Our basic pipeline for processing reads generated through use of Nextera libraries.
+
+strain_mapping/
+Studying strain-level heterogeneity in species with a well-characterized sequence space. 
+
+taxonomy/
+Multi-kingdom (bacterial, fungal, viral) taxonomic mapping and abundance estimations. 
+
+

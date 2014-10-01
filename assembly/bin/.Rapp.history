@@ -1,0 +1,393 @@
+newinput.file<-"Pcfilt_taxa.txt"#
+output.file <- paste(newinput.file, ".percent", ".txt", sep="")#
+output.file2 <- paste(newinput.file, ".melted", ".txt", sep="")#
+output.file3 <- paste(newinput.file, ".pdf", sep=""); #
+output.file4 <- paste(newinput.file, "_spec.pdf", sep="");
+tabletoplot<-read.table(file=newinput.file, sep="\t", header=T)#
+attach(tabletoplot)#
+names(tabletoplot)#
+sum<-as.numeric(tabletoplot[taxon=="Bacteria",])#
+#
+Cory<-as.numeric(tabletoplot[taxon=="Corynebacteriaceae" & taxlevel==5,])#
+Prop<-as.numeric(tabletoplot[taxon=="Propionibacteriaceae" & taxlevel==5,])#
+Acti<-as.numeric(tabletoplot[taxon=="Actinobacteria" & taxlevel==2,])-Cory-Prop#
+#
+Bact<-as.numeric(tabletoplot[taxon=="Bacteroidetes" & taxlevel==2,])#
+#
+Staph<-as.numeric(tabletoplot[taxon=="Staphylococcaceae" & taxlevel==5,])#
+Strep<-as.numeric(tabletoplot[taxon=="Streptococcaceae" & taxlevel==5,])#
+Clos<-as.numeric(tabletoplot[taxon=="Clostridia" & taxlevel==3,])#
+Firm<-as.numeric(tabletoplot[taxon=="Firmicutes" & taxlevel==2,])-Staph-Strep-Clos#
+#
+Alpha<-as.numeric(tabletoplot[taxon=="Alphaproteobacteria" & taxlevel==3,])#
+Beta<-as.numeric(tabletoplot[taxon=="Betaproteobacteria" & taxlevel==3,])#
+Serratia<-as.numeric(tabletoplot[taxon=="Serratia" & taxlevel==6,])#
+Gamma<-as.numeric(tabletoplot[taxon=="Gammaproteobacteria" & taxlevel==3,])-Serratia#
+#
+Prot<-as.numeric(tabletoplot[taxon=="Proteobacteria" & taxlevel==2,])-Alpha-Beta-Gamma-Serratia
+rapt = read.csv("http://vinux.in/viz/misc/raptor.csv")
+library(ggplot2)#
+ggplot(data=rapt) +#
+  geom_polygon(aes(x=V1, y=V2, group=group), colour=I("gray") ) +#
+  theme_bw() +#
+  scale_x_continuous(limits = c(0, 400)) +  #
+  scale_y_continuous(limits = c(0, 250)) +#
+  geom_text(aes(100,230, label="Velociraptor"))+#
+  theme(axis.line=element_blank(),#
+       axis.text.x=element_blank(), #
+       axis.text.y=element_blank(),#
+       axis.ticks=element_blank(),#
+       axis.title.x=element_blank(),   #
+       axis.title.y=element_blank(),#
+       legend.position="none",#
+       panel.background=element_blank(),#
+       panel.border=element_blank(),#
+       panel.grid.major=element_blank(),#
+       panel.grid.minor=element_blank(),#
+       plot.background=element_blank())
+rapt = read.csv("http://vinux.in/viz/misc/raptor.csv")#
+library(ggplot2)#
+ggplot(data=rapt) +#
+  geom_polygon(aes(x=V1, y=V2, group=group), colour=I("gray") ) +#
+  theme_bw() +#
+  scale_x_continuous(limits = c(0, 400)) +  #
+  scale_y_continuous(limits = c(0, 250)) +#
+  geom_text(aes(100,230, label="Velociraptor"))+#
+  theme(axis.line=element_blank(),#
+       axis.text.x=element_blank(), #
+       axis.text.y=element_blank(),#
+       axis.ticks=element_blank(),#
+       axis.title.x=element_blank(),   #
+       axis.title.y=element_blank(),#
+       legend.position="none",#
+       panel.background=element_blank(),#
+       panel.border=element_blank(),#
+       panel.grid.major=element_blank(),#
+       panel.grid.minor=element_blank(),#
+       plot.background=element_blank())
+x<-(0.000506158,0.009037667,0.011189709,0.012255548,0.01284449,0.017849048,0.027254791,0.051341019,0.053662472,0.074984489,0.079692234,0.10985014,0.138954845,0.148725619,0.156166346,0.197654218,0.236295688,0.263857895,0.291557247,0.342340093,0.389161566,0.406565006,0.410573002,0.433675708,0.567717425,0.627437954,0.745263359,0.865159067,0.872809198,0.881492305,0.929684969,0.945370657,0.962042546)
+x<-c(0.000506158,0.009037667,0.011189709,0.012255548,0.01284449,0.017849048,0.027254791,0.051341019,0.053662472,0.074984489,0.079692234,0.10985014,0.138954845,0.148725619,0.156166346,0.197654218,0.236295688,0.263857895,0.291557247,0.342340093,0.389161566,0.406565006,0.410573002,0.433675708,0.567717425,0.627437954,0.745263359,0.865159067,0.872809198,0.881492305,0.929684969,0.945370657,0.962042546)
+p.adjust(x, method="fdr", n=length(x))
+y<-c((0.140829571,0.10182071,0.075369148,0.042143577,0.035529895,0.060746563,0.497812523,0.27021507,0.717330198,0.052000535,0.024554066,0.094776679,0.638541193,0.602457512,0.858752496,0.108663243,NA,0.045789935,0.21818525,0.003117163,0.591722845,0.242753285,0.995171661,0.683877316,0.594925179,0.705552215,0.487114379,0.27259892,0.417348542,0.721014342,0.381392738,0.50461924,0.207757367))
+y<-c((0.140829571,0.10182071,0.075369148,0.042143577,0.035529895,0.060746563,0.497812523,0.27021507,0.717330198,0.052000535,0.024554066,0.094776679,0.638541193,0.602457512,0.858752496,0.108663243,0.045789935,0.21818525,0.003117163,0.591722845,0.242753285,0.995171661,0.683877316,0.594925179,0.705552215,0.487114379,0.27259892,0.417348542,0.721014342,0.381392738,0.50461924,0.207757367))
+y<-c(0.140829571,0.10182071,0.075369148,0.042143577,0.035529895,0.060746563,0.497812523,0.27021507,0.717330198,0.052000535,0.024554066,0.094776679,0.638541193,0.602457512,0.858752496,0.108663243,NA,0.045789935,0.21818525,0.003117163,0.591722845,0.242753285,0.995171661,0.683877316,0.594925179,0.705552215,0.487114379,0.27259892,0.417348542,0.721014342,0.381392738,0.50461924,0.207757367))
+y<-c(0.140829571,0.10182071,0.075369148,0.042143577,0.035529895,0.060746563,0.497812523,0.27021507,0.717330198,0.052000535,0.024554066,0.094776679,0.638541193,0.602457512,0.858752496,0.108663243,NA,0.045789935,0.21818525,0.003117163,0.591722845,0.242753285,0.995171661,0.683877316,0.594925179,0.705552215,0.487114379,0.27259892,0.417348542,0.721014342,0.381392738,0.50461924,0.207757367))y<-c((0.140829571,0.10182071,0.075369148,0.042143577,0.035529895,0.060746563,0.497812523,0.27021507,0.717330198,0.052000535,0.024554066,0.094776679,0.638541193,0.602457512,0.858752496,0.108663243,0.045789935,0.21818525,0.003117163,0.591722845,0.242753285,0.995171661,0.683877316,0.594925179,0.705552215,0.487114379,0.27259892,0.417348542,0.721014342,0.381392738,0.50461924,0.207757367)
+y<-c(0.140829571,0.10182071,0.075369148,0.042143577,0.035529895,0.060746563,0.497812523,0.27021507,0.717330198,0.052000535,0.024554066,0.094776679,0.638541193,0.602457512,0.858752496,0.108663243,0.045789935,0.21818525,0.003117163,0.591722845,0.242753285,0.995171661,0.683877316,0.594925179,0.705552215,0.487114379,0.27259892,0.417348542,0.721014342,0.381392738,0.50461924,0.207757367)
+p.adjust(y, method="fdr", n=length(y))
+z<-c(0.034415748,0.154949136,0.004326498,0.235730068,0.508146647,0.465027199,0.322686034,0.551286156,0.015693382,0.037757392,0.053677158,0.420755748,0.789485878,0.430387193,0.415325321,0.044312667,0.88148335,0.228324458,0.573642527,0.124842931,0.226065756,0.583318424,0.212929208,0.885292648,0.646029201,0.392639275,0.640103644,0.836472737,0.397784588,0.061916201,0.331497558,0.568886392,0.170576787)
+p.adjust(z, method="fdr", n=length(z))
+x<-c("a", "b", "c", "d")
+y<-c("phen1", "phen2", phen3")
+y<-c("phen1", "phen2", "phen3")
+z<-c(7,3,5,8,4,2,9,3,1,10,2,0)
+?rep
+x2<-rep(x, each=3)
+x
+x2
+y2<-rep(y, each=4)
+data.frame(x2, y2, z)
+newtable<-data.frame(x2,y2,z)
+newtable
+?kruskal
+??kruskal
+kruskal.test
+kruskal.test(z~x2*y2)
+kruskal.test(z~as.factor(x2)*as.factor(y2))
+library(gplots)#
+library (ggplot2)#
+library(reshape)#
+library(stats)#
+library(lme4)#
+library(languageR)#
+library(lattice)#
+library(RColorBrewer)#
+library(gridExtra)#
+library(pgirmess)
+library(pgirmess)
+?kruskall.mc
+?kruskal.mc
+?kruskalmc
+kruskalmc
+library (ggplot2)#
+library(reshape)#
+library(stats)#
+library(lme4)#
+library(languageR)#
+library(lattice)#
+library(RColorBrewer)#
+library(gridExtra)#
+library(pgirmess)
+kruskalmc
+?kruskalmc
+??kruskalmc
+variables()
+ls()
+newtable
+kruskalmc(resp=newtable$z, categ=newtable$x2*newtable$y2, data=newtable, pvalue=0.50
+)
+library(pgirmess)
+kruskalmc(resp=newtable$z, categ=newtable$x2*newtable$y2, data=newtable, pvalue=0.50
+)
+kruskalmc(resp=newtable$z, categ=newtable$x2, data=newtable, pvalue=0.50
+)
+source("http://bioconductor.org/biocLite.R")#
+biocLite()
+biocLite(c("GenomicFeatures", "AnnotationDbi"))
+x<-3
+str(x)
+install.packages(reshape)
+?install.packages
+library(reshape)
+library(devtools)#
+install_github("ggbiplot", "vqv")
+library(devtools)
+install_github("ggbiplot", "vqv")
+library(ggbiplot)
+data(wine)#
+wine.pca <- prcomp(wine, scale. = TRUE)#
+g <- ggbiplot(wine.pca, obs.scale = 1, var.scale = 1, #
+              groups = wine.class, ellipse = TRUE, circle = TRUE)#
+g <- g + scale_color_discrete(name = '')#
+g <- g + opts(legend.direction = 'horizontal', #
+              legend.position = 'top')#
+print(g)
+library(nlme)
+library(lattice)
+xyplot(weight~Time|Diet, BodyWeight)
+BodyWeight
+? xyplot
+?trellis.par.set
+library(datasets)
+data(airquality)
+head(airquality)
+qplot(Wind, Ozone, data=airquality)
+library(ggplot2)
+qplot(Wind, Ozone, data=airquality)
+qplot(Wind, Ozone, data=airquality, faces= .~factor(Month)))
+qplot(Wind, Ozone, data=airquality, faces= .~factor(Month))
+qplot(Wind, Ozone, data=airquality, facets= .~factor(Month))
+qplot(Wind, Ozone, data=airquality, facets= .~factor(Month)))
+qplot(Wind, Ozone, data=airquality, facets= .~factor(Month))
+qplot(Wind, Ozone, data=airquality, facets= . ~ factor(Month))
+factor(Month)
+attach(airqualtiy)
+attach(airquality)
+factor(Month)
+airquality=transform(airquality, Month=factor(Month))
+qplot(Wind, Ozone, data=airquality, facets= . ~ factor(Month))
+qplot(Wind, Ozone, data=airquality, facets= .~factor(Month))
+ls
+g<-ggplot(movies, aes(votes,ratin))
+g
+qplot(votes, rating, data=movies, smooth="loess")
+qplot(votes, rating, data=movies) + geom_smooth
+qplot(votes, rating, data=movies) + geom_smooth()
+qplot(votes, rating, data=movies) + stats_smooth("loess")
+qplot(votes, rating, data=movies, smooth="loess")
+113*2
+113*3
+64*2
+64*3
+28*2
+28*3
+226+128+56
+339+192+84
+339+192
+401/9
+615/9
+410/9
+531/9
+410/190
+615/190
+531/190
+cube <- function(x,n) { x^3}
+cube(3)
+x<-1:10
+if(x>5) { x<-0}
+f<-function(x) { g<-function(y){y+z} z<-4; x+g(x)}
+f<-function(x) { g<-function(y) {y+z} z<-4 x+g(x)}
+z<-10#
+f(3)
+f<-function(x){#
+	g<-function(y) {#
+		y+z#
+		}#
+		z<-4#
+		x+g(x)#
+}
+z<-10#
+f(3)
+rm(list=ls())#
+library(ggplot2)#
+library(reshape2)#
+library(RColorBrewer)#
+#
+setwd("/Users/ohjs/Documents/gitrepositories/skinmetagenome/assembly/bin")#
+#
+input.file <- "bowtiestats.txt";#
+output.file <- "best.txt";#
+table<-read.delim(file=input.file, sep="\t", header=F, stringsAsFactors=F)#
+#
+label<-sapply(strsplit(as.character(table$V1), '[ :]'), "[", 1)#
+kmer<-as.numeric(sapply(strsplit(as.character(label), '[.]'), "[", 2))#
+type<-sapply(strsplit(as.character(label), '[.]'), "[", 3)#
+concord1<-as.numeric(sapply(strsplit(as.character(table$V1), '[ :]'), "[", 2))#
+discord1<-as.numeric(sapply(strsplit(as.character(table$V2), '[ :]'), "[", 2))#
+overall<-sapply(strsplit(as.character(table$V3), '[ :]'), "[", 2)#
+overall<-as.numeric(gsub("%","", overall))#
+totalpaired <-as.numeric(sapply(strsplit(as.character(table$V4), '[ :]'), "[", 2))#
+totalreads<-as.numeric(sapply(strsplit(as.character(table$V5), '[ :]'), "[", 2))#
+#
+percconcord<-concord1/totalpaired#
+percdiscord<-discord1/totalpaired#
+overall<-overall/100#
+#
+newtable<-data.frame(label, kmer, type, percconcord, percdiscord, overall)#
+attach(newtable)#
+names(newtable)#
+#
+melted<-melt(newtable, id=1:3)#
+melted$variable<-gsub("percconcord", "%paired concordant", melted$variable)#
+melted$variable<-gsub("percdiscord", "%paired discordant", melted$variable)#
+melted$variable<-gsub("overall", "%overall alignment rate", melted$variable)#
+percplot<-melted
+input.file2<-"all_assemstats.txt"#
+table2<-read.table(file=input.file2, sep="\t", header=F, stringsAsFactors=F)#
+names(table2)<-c("N", "sum", "max", "filename")#
+attach(table2)#
+#
+kmer2<-as.numeric(sapply(strsplit(as.character(table2$filename), '[./]'), "[", 2))#
+newlabel2<-table2$filename#
+category<-rep("velvet", nrow(table2))#
+#
+newtable2<-data.frame(table2$filename, newlabel2, category, kmer2, N, sum, max)#
+melted2<-melt(newtable2, id=1:4)#
+melted2$variable<-gsub("N", "number contigs above 300bp", melted2$variable)#
+melted2$variable<-gsub("sum", "number bases incorporated", melted2$variable)#
+melted2$variable<-gsub("max", "max contig size", melted2$variable)#
+#
+melted2$Pat<-sapply(strsplit(as.character(melted2$V1), '[_]'), "[", 1)#
+melted2$Site<-sapply(strsplit(as.character(melted2$V1), '[_-]'), "[", 3)#
+melted2$Char<-sapply(strsplit(as.character(melted2$V1), '[_]'), "[", 6)#
+melted2$Met<-sapply(strsplit(as.character(melted2$table2.filename), '[_]'), "[", 1)#
+#
+head(melted2)#
+nplot<-melted2
+rm(list=ls())#
+library(ggplot2)#
+library(reshape2)#
+library(RColorBrewer)#
+#
+setwd("/Users/ohjs/Documents/gitrepositories/skinmetagenome/assembly/bin")#
+#
+input.file <- "bowtiestats.txt";#
+output.file <- "best.txt";#
+table<-read.delim(file=input.file, sep="\t", header=F, stringsAsFactors=F)#
+#
+label<-sapply(strsplit(as.character(table$V1), '[ :]'), "[", 1)#
+kmer<-as.numeric(sapply(strsplit(as.character(label), '[.]'), "[", 2))#
+type<-sapply(strsplit(as.character(label), '[.]'), "[", 3)#
+concord1<-as.numeric(sapply(strsplit(as.character(table$V1), '[ :]'), "[", 2))#
+discord1<-as.numeric(sapply(strsplit(as.character(table$V2), '[ :]'), "[", 2))#
+overall<-sapply(strsplit(as.character(table$V3), '[ :]'), "[", 2)#
+overall<-as.numeric(gsub("%","", overall))#
+totalpaired <-as.numeric(sapply(strsplit(as.character(table$V4), '[ :]'), "[", 2))#
+totalreads<-as.numeric(sapply(strsplit(as.character(table$V5), '[ :]'), "[", 2))#
+#
+percconcord<-concord1/totalpaired#
+percdiscord<-discord1/totalpaired#
+overall<-overall/100#
+#
+newtable<-data.frame(label, kmer, type, percconcord, percdiscord, overall)#
+attach(newtable)#
+names(newtable)#
+#
+melted<-melt(newtable, id=1:3)#
+melted$variable<-gsub("percconcord", "%paired concordant", melted$variable)#
+melted$variable<-gsub("percdiscord", "%paired discordant", melted$variable)#
+melted$variable<-gsub("overall", "%overall alignment rate", melted$variable)#
+percplot<-melted
+input.file2<-"all_assemstats.txt"#
+table2<-read.table(file=input.file2, sep="\t", header=F, stringsAsFactors=F)#
+names(table2)<-c("N", "sum", "max", "filename")#
+attach(table2)#
+#
+kmer2<-as.numeric(sapply(strsplit(as.character(table2$filename), '[./]'), "[", 2))#
+newlabel2<-table2$filename#
+category<-rep("velvet", nrow(table2))#
+#
+newtable2<-data.frame(table2$filename, newlabel2, category, kmer2, N, sum, max)#
+melted2<-melt(newtable2, id=1:4)#
+melted2$variable<-gsub("N", "number contigs above 300bp", melted2$variable)#
+melted2$variable<-gsub("sum", "number bases incorporated", melted2$variable)#
+melted2$variable<-gsub("max", "max contig size", melted2$variable)
+head(melted2)#
+nplot<-melted2
+head(newtable)#
+head(newtable2)#
+newlabel<-Pat#
+#
+bowtietable<-data.frame(newtable, totalreads)#
+assemtable<-newtable2#
+assemtable$matcher<-gsub("_metavelvet_assembly", "", assemtable$table2.filename)#
+assemtable$matcher<-gsub("_velvet_assembly", "", assemtable$matcher)#
+assemtable$matcher<-gsub(".fa", "", assemtable$matcher)#
+assemtable$matcher<-paste(assemtable$matcher, category, "stats.txt", sep=".")#
+#
+write.table(bowtietable, file="bowtietable.txt", sep="\t", col.names=T, row.names=F)#
+write.table(assemtable, file="assemtable.txt", sep="\t", col.names=T, row.names=F)
+write.table(bowtietable, file="bowtietable.txt", sep="\t", col.names=T, row.names=F)#
+write.table(assemtable, file="assemtable.txt", sep="\t", col.names=T, row.names=F)
+both<-data.frame(assemtable[1:7], bowtietable[4:7][match(assemtable$matcher, bowtietable$label),])#
+write.table(both, file="both.txt", sep="\t", col.names=T, row.names=F)
+dim(both)
+both<-na.omit(both)
+dim(both)
+head(newtable)#
+head(newtable2)#
+newlabel<-Pat
+head(newtable)#
+head(newtable2)#
+#
+bowtietable<-data.frame(newtable, totalreads)#
+assemtable<-newtable2#
+assemtable$matcher<-gsub("_metavelvet_assembly", "", assemtable$table2.filename)#
+assemtable$matcher<-gsub("_velvet_assembly", "", assemtable$matcher)#
+assemtable$matcher<-gsub(".fa", "", assemtable$matcher)#
+assemtable$matcher<-paste(assemtable$matcher, category, "stats.txt", sep=".")
+write.table(bowtietable, file="bowtietable.txt", sep="\t", col.names=T, row.names=F)#
+write.table(assemtable, file="assemtable.txt", sep="\t", col.names=T, row.names=F)
+both<-data.frame(assemtable[1:7], bowtietable[4:7][match(assemtable$matcher, bowtietable$label),])#
+write.table(both, file="both.txt", sep="\t", col.names=T, row.names=F)
+both<-na.omit(both)
+velvetonly<-both[both$category =="velvet",]
+head(velvetonly)
+velvetonly$V2<-sapply(strsplit(as.character(velvetonly$table2.filename), '[_]'), "[", 1)
+head(velvetonly)
+split<-by(velvetonly, as.factor(velvetonly$V2), invisible)
+length(splti)
+length(split)
+everythingDF<-NULL#
+lmdf<-NULL
+i=1
+lmdf<-as.data.frame(split[[i]])
+lmdf$Nrank<-rank(lmdf$N)#
+lmdf$sumrank<-rank(lmdf$sum)#
+lmdf$overallrank<-rank(lmdf$overall)#
+lmdf$score<-lmdf$Nrank + lmdf$sumrank + 2*lmdf$overallrank#
+lmdf<-lmdf[order(lmdf$score, decreasing=TRUE),]
+lmdf
+use<-lmdf[1,]
+for (i in 1: length(split)) {#
+	lmdf<-as.data.frame(split[[i]])#
+lmdf$Nrank<-rank(lmdf$N)#
+lmdf$sumrank<-rank(lmdf$sum)#
+lmdf$overallrank<-rank(lmdf$overall)#
+lmdf$score<-lmdf$Nrank + lmdf$sumrank + 2*lmdf$overallrank#
+lmdf<-lmdf[order(lmdf$score, decreasing=TRUE),]#
+use<-lmdf[1,]#
+everythingDF<-rbind(everythingDF, use)#
+}
+everythingDF$label<-paste(everythingDF$V2, "_assembly.", everythingDF$kmer2, ".fa", sep="")#
+write.table(everythingDF, file="best.velvet.txt", col.names=T, row.names=F, sep="\t")#
+write.table(as.character(everythingDF$label), file="velvet_filestoget.txt", col.names=F, row.names=F, sep="\t")

@@ -1,0 +1,166 @@
+#!/usr/bin/python
+#giving_genomes_useable_names.py
+#Author: Allyson Byrd
+#Purpose: Takes genome files downloaded from NCBI and renames them to have useable names
+	#if create_merge = T will also create merged versions of the files which are necessary to run the bowtie strain tracking pipeling
+ 
+#Inputs: 1) genomes_dir: directory of genomes that need to be renamed, each strain needs to be in 1 fasta file
+		#2) new_dir: name of directory where newly names files will be written 
+			#merged files will be saved in a directory merged created within new_dir (new_dir/merged)
+		#3) gi_taxid.dmp: file from NCBI taxonomy that associates each gi number with a taxid num
+		#4) names.dmp: file from NCBI taxonomy that associates each taxid num with a name 
+		#5) create_merge: logical operator indicating whether merged versions of the files should be created 
+	
+#Output: 1) in new_dir each of the genomes in genome_dir will be renamed with a more informative name derived from NCBI's taxonomy db
+		#2) if create_merge = T, for each of the genomes in genome_dir, in new_dir/merged, there will be modified versions where
+			#the first fasta header has been replaced by a new formatted name which includes the NCBI taxid
+			#following fasta headers have been replaced with 100 Ns
+			#each genome has been artificially combined into one sequence
+			#this is necessary for the strain_tracking pipeline in the future 
+			
+#Usage: python giving_genomes_useable_names.py genomes_dir new_dir gi_taxid.dmp names.dmp T
+
+import glob,sys,os
+
+genome_dir = sys.argv[1] #directory where genomes to be renamed are located
+new_dir = sys.argv[2] #directory where renamed genomes will be placed
+gi_taxid = sys.argv[3] #location of file from NCBI taxonomy that associates each gi number with a taxid num
+names = sys.argv[4] #location of file from NCBI taxonomy that associates each taxid num with a name
+
+#create merged sequences
+create_merge = sys.argv[5] #T or F logical operator indicates whether merged versions of the files should be created  
+
+path_list = glob.glob('%s/*' % genome_dir)
+
+filename_gi_dic = {} #Key: filename		value:first gi number in file
+gi_taxid_dic = {}	#Key:gi number		value: taxid associated with gi number
+taxid_name_dic = {}	#Key: taxid			value: name of organism assocaited with taxid
+
+#print path_list
+
+#reading the first line of each of the files in the genome_dir to extract a gi number
+#the gi number will be used to find the taxonomic name 
+for file in path_list:
+	
+	file_name = file.split('/')[-1]
+	
+	FILE = open(file, 'r')
+	
+	line = FILE.readline()
+	gi = line.split('|')[1]
+	filename_gi_dic[file_name] = gi 
+	gi_taxid_dic[gi] = ''
+	
+	FILE.close()
+
+#associating each of the gis with their taxonomy name using files from NCBI taxonomy 
+
+gis_found = 0 #once all the gis are associated with a taxid we can stop reading in the file 
+gi_FILE = open(gi_taxid, 'r')
+
+for line in gi_FILE:
+	line = line.strip().split('\t')
+	gi = line[0]
+	taxid = line[1]
+	
+	if gi_taxid_dic.has_key(gi):
+		gi_taxid_dic[gi] = taxid
+		gis_found += 1
+		
+		taxid_name_dic[taxid] = ''
+		if gis_found == len(gi_taxid_dic): #all gis have been associated 
+			break
+
+gi_FILE.close()
+
+#print gi_taxid_dic
+
+#now that all the gis are associated with a taxid, all taxids need to be associated with a name
+
+taxids_found = 0 #once all the taxids are associated with a name can stop reading in the file
+taxid_FILE = open(names, 'r')
+
+for line in taxid_FILE:
+	line = line.split('|')
+	taxid = line[0].strip()
+	name = line[1].strip().replace(' ','_')
+	label = line[3].strip()
+	
+	if taxid_name_dic.has_key(taxid) and taxid_name_dic[taxid] == '' and label  == 'scientific name':
+		taxid_name_dic[taxid] = name
+		taxids_found += 1 
+		
+		if taxids_found == len(taxid_name_dic): #all taxids have been associated with names 
+			break
+taxid_FILE.close()
+
+#print taxid_name_dic
+
+#files can now be renamed based on the found names 
+
+cline = 'mkdir %s' % new_dir #where the files with new names will be written
+os.system(cline)
+
+for file in path_list:
+	
+	file_name = file.split('/')[-1]
+	
+	gi = filename_gi_dic[file_name] 
+	taxid = gi_taxid_dic[gi]
+	name = taxid_name_dic[taxid]
+
+	cline = 'cp %s %s/%s.fa' % (file, new_dir, name) 
+	os.system(cline)
+
+#sys.exit()	
+
+print "Now creating the merged sequences"
+#the first header is being reformatted to include a taxid
+#fasta sequences are being artificially concatenated into one sequences with Ns
+
+if create_merge == 'T':
+	
+	merged_dir = '%s/merged' % new_dir #where the merged files will be written 
+	
+	cline = 'mkdir %s' % merged_dir
+	os.system(cline)
+
+	for file in path_list: 
+	
+		file_name = file.split('/')[-1]
+		
+		gi = filename_gi_dic[file_name]
+		taxid = gi_taxid_dic[gi]
+		name = taxid_name_dic[taxid]
+		
+		header = '>taxid:%s|%s\n' % (taxid, name)
+		
+		FILE_IN = open(file, 'r')
+		FILE_OUT = open('%s/%s.fa' % (merged_dir, name), 'w')
+		
+		FILE_IN.readline() #skipping the first line
+		
+		FILE_OUT.write(header)
+		
+		#spacer sequence 
+		spacer = 'NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\n'
+		
+		for line in FILE_IN:
+			if line.startswith('>'):
+				line = spacer
+			FILE_OUT.write(line)
+		
+		FILE_IN.close()
+		FILE_OUT.close()
+				
+		
+		
+
+
+		
+		
+		
+		
+		
+		
+		

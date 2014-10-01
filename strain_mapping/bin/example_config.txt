@@ -1,0 +1,39 @@
+###########################################################################
+# STRAIN TRACKING CONFIGURATION FILE FOR COMMAND LINE USAGE
+#
+# Please provide the COMPLETE PATH of a file, and do not include space in file names
+# Example inputs are as follows below
+# Please fill all the REQUIRED parameters (*)
+#
+###########################################################################
+
+# FASTQ FILE NAME (.fastq or .fq)
+# Should be a fastq file of reads which have already been quality controlled 
+*filename = /path/to/sample/my_sample.fastq
+
+# SCRIPTS AND EXECUTABLES DIRECTORIES
+*script_bin = /bin/
+
+#DATABASE FILES
+
+#location of whole genome bt2 index
+*whole_genome_bt2 = /genome_dir/merged/all_genomes.fa
+*whole_genome_lengths = /genome_dir/merged/all_genomes.fa
+
+#number of genomes in all_genomes.fa, must be an integer
+*number_genomes = 5
+
+#location of noncore pieces index
+*noncore_genome_bt2 = /genome_dir/noncore/all_noncore_pieces.fa
+*noncore_genome_lengths = /genome_dir/noncore/all_noncore_pieces.fa_lengths
+
+*SNPs = unique_SNPs.txt
+*SNP_counts = SNP_strain_counts.txt
+
+# OUTPUT DIRECTORY (where the output files should be stored)
+
+output_directory = /path/to/output
+
+#Number of threads used by Bowtie2 
+# Default: 8
+num_threads = 8

@@ -1,0 +1,4 @@
+The below 2 files should be downloaded to this folder. 
+
+wget ftp://anonymous@ftp.ncbi.nlm.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
+wget ftp://anonymous@ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz

@@ -8,7 +8,7 @@ e.g.,
 >Cool_fungus
 GGGGGACTGNNNNN.......NNNNACTGGGGG
 
-In the all_lengths.txt file, append a line containing the appropriate NCBI taxid number and the genome length in bp for your genome. 
+In the all_lengths.txt file, append a line containing the appropriate NCBI taxid number and the genome length in bp for your genome (not including the Ns). 
 
 e.g., 
 taxid:1000000000|Cool_fungus	10000000
